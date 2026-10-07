@@ -1,0 +1,31 @@
+BIG BOYS SAVES - FIX FOR CLOUDFLARE + SUPABASE
+
+PROBLEM 1: your code is inside an extra folder on GitHub (big-boys-saves/big-boys-saves).
+  In Cloudflare > your project > Settings > Build:
+    Root directory:  big-boys-saves
+    Build command:   npm install && npm run build
+    Deploy command:  npx wrangler deploy
+
+PROBLEM 2: the Google button used Lovable's sign-in service, which only works on Lovable.
+  Replace on GitHub: big-boys-saves/src/routes/auth.tsx  with the auth.tsx in this zip.
+
+PROBLEM 3: your Supabase database is empty unless you ran the setup.
+  Supabase > SQL Editor > New query > paste ALL of setup.sql > Run (only once).
+  The FIRST person to sign up becomes admin.
+
+PROBLEM 4: settings Cloudflare needs (Settings > Variables and Secrets, add BOTH as
+  build variables AND runtime variables), values from Supabase > Project Settings > API:
+    VITE_SUPABASE_URL              = https://YOURPROJECT.supabase.co
+    VITE_SUPABASE_PUBLISHABLE_KEY  = your publishable / anon key
+    VITE_SUPABASE_PROJECT_ID       = YOURPROJECT
+    SUPABASE_URL                   = same as VITE_SUPABASE_URL
+    SUPABASE_PUBLISHABLE_KEY       = same as VITE_SUPABASE_PUBLISHABLE_KEY
+  Never add the service_role key. Redeploy after adding them.
+
+PROBLEM 5: Google sign-in setup
+  a) Google Cloud Console > APIs & Services > Credentials > Create OAuth client (Web).
+     Authorized redirect URI:  https://YOURPROJECT.supabase.co/auth/v1/callback
+  b) Supabase > Authentication > Sign In / Providers > Google: turn on, paste Client ID + Secret.
+  c) Supabase > Authentication > URL Configuration:
+     Site URL:       https://your-site.workers.dev   (your real Cloudflare address)
+     Redirect URLs:  https://your-site.workers.dev/auth
